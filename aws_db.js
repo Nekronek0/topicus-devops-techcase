@@ -13,9 +13,26 @@ const postTodoItem = (todoTitle, todo) => {
       todoId: uuid(),
       todoTitle,
       todo,
+      todoDone: false,
     },
   };
   return dynamoDbClient.put(params).promise();
 };
 
-module.exports = { getTodoItems, postTodoItem };
+const updateTodoItem = (todoId, updatedTodoTitle, updatedTodo, todoDone) => {
+  dynamoDbClient
+    .update({
+      TableName: TODO_TABLE,
+      Key: {
+        id: todoId,
+      },
+      UpdateExpression: 'set todoTitle= :todoTitle, todo = :todo, todoDone = :todoDone',
+      ExpressionAttributeValues: {
+        ':todoTitle': updatedTodoTitle,
+        ':todo': updatedTodo,
+        ':todoDone': todoDone,
+      },
+    });
+};
+
+module.exports = { getTodoItems, postTodoItem, updateTodoItem };
