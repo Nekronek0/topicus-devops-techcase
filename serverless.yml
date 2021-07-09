@@ -39,14 +39,14 @@ functions:
 
 resources:
   Resources:
-    UsersTable:
+    ToDoTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: id
+          - AttributeName: todo
             AttributeType: S
         KeySchema:
-          - AttributeName: id
+          - AttributeName: todoId
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
