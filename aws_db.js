@@ -1,15 +1,17 @@
 const AWS = require('aws-sdk');
+const { uuid } = require('uuidv4');
 
 const { TODO_TABLE } = process.env;
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 
 const getTodoItems = () => dynamoDbClient.scan({ TableName: TODO_TABLE }).promise();
 
-const postTodoItem = (todoId, todo) => {
+const postTodoItem = (todoTitle, todo) => {
   const params = {
     TableName: TODO_TABLE,
     Item: {
-      todoId,
+      todoId: uuid(),
+      todoTitle,
       todo,
     },
   };

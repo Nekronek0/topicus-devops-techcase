@@ -23,16 +23,16 @@ app.get('/todoitems/', async (req, res) => {
 });
 
 app.post('/todoitems', async (req, res) => {
-  const { todoId, todo } = req.body;
+  const { todoTitle, todo } = req.body;
   if (typeof todoId !== 'string') {
-    res.status(400).json({ error: '"todoId" must be a string' });
+    res.status(400).json({ error: '"todoTitle" must be a string' });
   } else if (typeof todo !== 'string') {
     res.status(400).json({ error: '"todo" must be a string' });
   }
 
   try {
-    await postTodoItem(todoId, todo);
-    res.json({ todoId, todo });
+    await postTodoItem(todoTitle, todo);
+    res.json({ todoTitle, todo });
   } catch (error) {
     res.status(500).json({ error: `Could not create todo item: ${error}` });
   }
