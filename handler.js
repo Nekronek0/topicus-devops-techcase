@@ -31,7 +31,7 @@ app.post('/todoitems', async (req, res) => {
   }
 
   try {
-    await postTodoItem();
+    await postTodoItem(todoId, todo);
     res.json({ todoId, todo });
   } catch (error) {
     res.status(500).json({ error: `Could not create todo item: ${error}` });
