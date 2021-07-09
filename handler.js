@@ -1,23 +1,22 @@
-const AWS = require("aws-sdk");
-const express = require("express");
-const serverless = require("serverless-http");
-const { uuid } = require("uuidv4");
+const AWS = require('aws-sdk');
+const express = require('express');
+const serverless = require('serverless-http');
 
 const app = express();
 
-const TODO_TABLE = process.env.TODO_TABLE;
+const { TODO_TABLE } = process.env;
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 
 app.use(express.json());
 
-app.get("/todoitems/", async function (req, res) {
+app.get('/todoitems/', async (req, res) => {
   const params = { TableName: TODO_TABLE };
 
   try {
     const { Items } = await dynamoDbClient.get(params).promise();
     if (Items) {
-      const { todoId, todo } = Item;
-      res.json({ todoId, todo });
+      // const { todoId, todo } = Items;
+      // res.json({ todoId, todo });
       res.json(Items);
     } else {
       res
@@ -26,15 +25,15 @@ app.get("/todoitems/", async function (req, res) {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Could not retreive ToDo items" });
+    res.status(500).json({ error: 'Could not retreive ToDo items' });
   }
 });
 
-app.post("/todoitems", async function (req, res) {
+app.post('/todoitems', async (req, res) => {
   const { todoId, todo } = req.body;
-  if (typeof todoId) !== "string" {
+  if (typeof todoId !== 'string') {
     res.status(400).json({ error: '"todoId" must be a string' });
-  } else if (typeof todo !== "string") {
+  } else if (typeof todo !== 'string') {
     res.status(400).json({ error: '"todo" must be a string' });
   }
 
@@ -51,15 +50,12 @@ app.post("/todoitems", async function (req, res) {
     res.json({ todoId, todo });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Could not create todo item" });
+    res.status(500).json({ error: 'Could not create todo item' });
   }
 });
 
-app.use((req, res, next) => {
-  return res.status(404).json({
-    error: "Not Found",
-  });
-});
-
+app.use((req, res, next) => res.status(404).json({
+  error: 'Not Found',
+}));
 
 module.exports.handler = serverless(app);
