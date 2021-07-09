@@ -3,11 +3,11 @@ service: topicus-devops-techcase
 frameworkVersion: '2'
 
 custom:
-  tableName: 'users-table-${self:provider.stage}'
+  tableName: 'todo-table-${self:provider.stage}'
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   lambdaHashingVersion: '20201221'
   stage: dev
   iam:
@@ -22,7 +22,7 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource:
-            - Fn::GetAtt: [ UsersTable, Arn ]
+            - Fn::GetAtt: [ ToDoTable, Arn ]
   environment:
     USERS_TABLE: ${self:custom.tableName}
 
@@ -43,10 +43,10 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: userId
+          - AttributeName: id
             AttributeType: S
         KeySchema:
-          - AttributeName: userId
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1

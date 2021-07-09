@@ -4,57 +4,53 @@ const serverless = require("serverless-http");
 
 const app = express();
 
-const USERS_TABLE = process.env.USERS_TABLE;
+const TODO_TABLE = process.env.TODO_TABLE;
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 
 app.use(express.json());
 
-app.get("/users/:userId", async function (req, res) {
-  const params = {
-    TableName: USERS_TABLE,
-    Key: {
-      userId: req.params.userId,
-    },
-  };
+app.get("/todoitems/", async function (req, res) {
+  const params = { TableName: TODO_TABLE };
 
   try {
-    const { Item } = await dynamoDbClient.get(params).promise();
-    if (Item) {
-      const { userId, name } = Item;
-      res.json({ userId, name });
+    const { Items } = await dynamoDbClient.get(params).promise();
+    if (Items) {
+      // const { id, todo } = Item;
+      // res.json({ id, todo });
+      res.json(Items);
     } else {
       res
         .status(404)
-        .json({ error: 'Could not find user with provided "userId"' });
+        .json({ error: 'Could not find ToDo items' });
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Could not retreive user" });
+    res.status(500).json({ error: "Could not retreive ToDo items" });
   }
 });
 
-app.post("/users", async function (req, res) {
+app.post("/todoitems", async function (req, res) {
   const { userId, name } = req.body;
   if (typeof userId !== "string") {
-    res.status(400).json({ error: '"userId" must be a string' });
+    res.status(400).json({ error: '"id" must be a string' });
   } else if (typeof name !== "string") {
-    res.status(400).json({ error: '"name" must be a string' });
+    res.status(400).json({ error: '"todo" must be a string' });
   }
 
   const params = {
-    TableName: USERS_TABLE,
+    TableName: TODO_TABLE,
     Item: {
-      userId: userId,
-      name: name,
+      id,
+      todo,
     },
   };
 
   try {
     await dynamoDbClient.put(params).promise();
-    res.json({ userId, name });
+    res.json({ id, todo });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Could not create user" });
+    res.status(500).json({ error: "Could not create todo item" });
   }
 });
 
