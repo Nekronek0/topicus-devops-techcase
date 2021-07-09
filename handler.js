@@ -1,6 +1,7 @@
 const AWS = require("aws-sdk");
 const express = require("express");
 const serverless = require("serverless-http");
+const { uuid } = require("uuidv4");
 
 const app = express();
 
@@ -30,12 +31,12 @@ app.get("/todoitems/", async function (req, res) {
 });
 
 app.post("/todoitems", async function (req, res) {
-  const { userId, name } = req.body;
-  if (typeof userId !== "string") {
-    res.status(400).json({ error: '"id" must be a string' });
-  } else if (typeof name !== "string") {
+  const { todo } = req.body;
+  if (typeof todo !== "string") {
     res.status(400).json({ error: '"todo" must be a string' });
   }
+
+  const id = uuid();
 
   const params = {
     TableName: TODO_TABLE,
