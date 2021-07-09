@@ -16,8 +16,8 @@ app.get("/todoitems/", async function (req, res) {
   try {
     const { Items } = await dynamoDbClient.get(params).promise();
     if (Items) {
-      // const { id, todo } = Item;
-      // res.json({ id, todo });
+      const { todoId, todo } = Item;
+      res.json({ todoId, todo });
       res.json(Items);
     } else {
       res
@@ -31,24 +31,24 @@ app.get("/todoitems/", async function (req, res) {
 });
 
 app.post("/todoitems", async function (req, res) {
-  const { todo } = req.body;
-  if (typeof todo !== "string") {
+  const { todoId, todo } = req.body;
+  if (typeof todoId) !== "string" {
+    res.status(400).json({ error: '"todoId" must be a string' });
+  } else if (typeof todo !== "string") {
     res.status(400).json({ error: '"todo" must be a string' });
   }
-
-  const id = uuid();
 
   const params = {
     TableName: TODO_TABLE,
     Item: {
-      id,
+      todoId,
       todo,
     },
   };
 
   try {
     await dynamoDbClient.put(params).promise();
-    res.json({ id, todo });
+    res.json({ todoId, todo });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Could not create todo item" });
