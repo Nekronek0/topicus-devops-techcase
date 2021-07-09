@@ -1,22 +1,16 @@
-const AWS = require('aws-sdk');
 const express = require('express');
 const serverless = require('serverless-http');
 
-const app = express();
+const { getTodoItems, postTodoItem } = require('./aws_db');
 
-const { TODO_TABLE } = process.env;
-const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
+const app = express();
 
 app.use(express.json());
 
 app.get('/todoitems/', async (req, res) => {
-  const params = { TableName: TODO_TABLE };
-
   try {
-    const { Items } = await dynamoDbClient.get(params).promise();
+    const { Items } = await getTodoItems();
     if (Items) {
-      // const { todoId, todo } = Items;
-      // res.json({ todoId, todo });
       res.json(Items);
     } else {
       res
@@ -24,8 +18,7 @@ app.get('/todoitems/', async (req, res) => {
         .json({ error: 'Could not find ToDo items' });
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: 'Could not retreive ToDo items' });
+    res.status(500).json({ error: `Could not retreive ToDo items: ${error}` });
   }
 });
 
@@ -37,20 +30,11 @@ app.post('/todoitems', async (req, res) => {
     res.status(400).json({ error: '"todo" must be a string' });
   }
 
-  const params = {
-    TableName: TODO_TABLE,
-    Item: {
-      todoId,
-      todo,
-    },
-  };
-
   try {
-    await dynamoDbClient.put(params).promise();
+    await postTodoItem();
     res.json({ todoId, todo });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: 'Could not create todo item' });
+    res.status(500).json({ error: `Could not create todo item: ${error}` });
   }
 });
 
