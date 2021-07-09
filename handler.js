@@ -24,7 +24,7 @@ app.get('/todoitems/', async (req, res) => {
 
 app.post('/todoitems', async (req, res) => {
   const { todoTitle, todo } = req.body;
-  if (typeof todoId !== 'string') {
+  if (typeof todoTitle !== 'string') {
     res.status(400).json({ error: '"todoTitle" must be a string' });
   } else if (typeof todo !== 'string') {
     res.status(400).json({ error: '"todo" must be a string' });
