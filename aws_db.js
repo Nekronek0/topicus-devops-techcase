@@ -19,20 +19,4 @@ const postTodoItem = (todoTitle, todo) => {
   return dynamoDbClient.put(params).promise();
 };
 
-const updateTodoItem = (todoId, updatedTodoTitle, updatedTodo, todoDone) => {
-  dynamoDbClient
-    .update({
-      TableName: TODO_TABLE,
-      Key: {
-        id: todoId,
-      },
-      UpdateExpression: 'set todoTitle= :todoTitle, todo = :todo, todoDone = :todoDone',
-      ExpressionAttributeValues: {
-        ':todoTitle': updatedTodoTitle,
-        ':todo': updatedTodo,
-        ':todoDone': todoDone,
-      },
-    });
-};
-
 module.exports = { getTodoItems, postTodoItem, updateTodoItem };
