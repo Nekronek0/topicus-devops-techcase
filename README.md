@@ -4,7 +4,7 @@ This is the test case I developed. I used the Serverless framework to deploy my 
 
 The API is configured as follows: 
 
-####`GET /todoitems`
+`GET /todoitems`
 Returns JSON with all the todo items
 Input: -
 Output:
@@ -12,7 +12,7 @@ JSON containing:
 - todoId (string): ID of the todo item (UUIDv4)
 - todoTitle (string): title for the todo item
 - todo (string): the description for the todo item
-- todoDone (boolean)
+- todoDone (boolean): true if the todo item is done, false if not
 
 Example input:
 ```bash
@@ -37,7 +37,7 @@ Example output:
   }
 ]
 ```
-####`POST /todoitems`
+`POST /todoitems`
 Add a new todo item to the todolist
 Input:
 JSON containing:
@@ -46,10 +46,8 @@ JSON containing:
 
 Output:
 JSON containing:
-- todoId (string): ID of the todo item (UUIDv4)
 - todoTitle (string): title for the todo item
 - todo (string): the description for the todo item
-- todoDone (boolean)
 
 Example input:
 ```bash
